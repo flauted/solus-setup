@@ -1,0 +1,2 @@
+# Keyboard Shortcuts
+To add keyboard shortcuts, i.e. <Ctrl><Alt>t, System Settings -> Devices -> Keyboards. If the program doesn't launch, `sudo eopkg up` and reboot. Note that adding shortcuts via dconf at /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings is BROKEN!

@@ -115,20 +115,19 @@ ln -s libEGL_nvidia.so.1 libEGL_nvidia.so.0
 # unless you're trying to do all this in a container. Then you wouldn't have access to
 # the daemon. Just a note from experience doing other things inside containers.
 #
-# From the container runtime README:
+# From the container runtime README, configure the systemd file AND NOT the daemon json (the json will work until you go to reboot. Then you'll have to sudo dockerd on startup.)
 # Register new runtime:
-sudo tee /etc/docker/daemon.json <<EOF
-{
-    "runtimes": {
-        "nvidia": {
-            "path": "/usr/bin/nvidia-container-runtime",
-            "runtimeArgs": []
-        }
-    }
-}
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo tee /etc/systemd/system/docker.service.d/override.conf <<EOF
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd --host=fd:// --add-runtime=nvidia=/usr/bin/nvidia-container-runtime
 EOF
-# Restart daemon
-sudo pkill -SIGHUP dockerd
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 
 # Enjoy! :D
 docker run --runtime=nvidia nvidia/cuda nvidia-smi
+
+# After reboot, I had to run
+# sudo dockerd 2>/dev/null &

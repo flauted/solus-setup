@@ -131,3 +131,14 @@ docker run --runtime=nvidia nvidia/cuda nvidia-smi
 
 # After reboot, I had to run
 # sudo dockerd 2>/dev/null &
+# That's a symptom that you've used the daemon.json instead of the systemd.
+# Just rm the daemon.json file (or mv it).
+#
+# Lastly verify that
+docker run hello-world
+# still works. If it doesn't, there's a good chance you accidentally overwrote
+# /usr/bin/runc. That's not a big deal, just do:
+# eopkg rmf docker
+# eopkg it docker
+# That'll remove runc and reinstall it. Now, if you accidentally put AND LEFT
+# something at /usr/bin/runc... :(
